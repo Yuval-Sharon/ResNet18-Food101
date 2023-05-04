@@ -24,6 +24,9 @@ class EpochResult:
 
 
 def log_one_epoch_stats(epoc_result: EpochResult):
+    print(
+        f"Epoch {epoc_result.index + 1} \t train_loss: {epoc_result.train_loss:.3f} \t train_acc: {epoc_result.train_acc:.3f} \t test_loss: {epoc_result.test_loss:.3f} \t test_acc: {epoc_result.test_acc:.3f} \t epoch_time: {epoc_result.epoch_time:.3f} seconds"
+    )
     logging.info(
         f"Epoch {epoc_result.index + 1} \t train_loss: {epoc_result.train_loss:.3f} \t train_acc: {epoc_result.train_acc:.3f} \t test_loss: {epoc_result.test_loss:.3f} \t test_acc: {epoc_result.test_acc:.3f} \t epoch_time: {epoc_result.epoch_time:.3f} seconds"
     )

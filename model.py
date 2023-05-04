@@ -21,7 +21,8 @@ data_path = "./data"
 NUM_EPOCHS = 1051
 current_date = time.strftime("%Y-%m-%d")
 epoch_stats_csv = f"stats/epoch_stats_{current_date}.csv"
-
+# set manual_seed
+torch.manual_seed(42)
 
 # Define the transformation for the image
 # taken from https://github.com/shubhajitml/food-101/blob/master/food-101-pytorch.ipynb
@@ -52,9 +53,9 @@ test_data = datasets.Food101(
     root=f"{data_path}/food101", download=True, split="test", transform=test_transform
 )
 # train_set = ImageFolder('./data/food101', transform=train_transform)
-train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
+train_loader = DataLoader(train_data, batch_size=128, shuffle=True)
 # test_set = ImageFolder('./data/test', transform=test_transform)
-test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
+test_loader = DataLoader(test_data, batch_size=128, shuffle=False)
 
 print(f"train_set has {len(train_data)} images")
 print(f"test_set has {len(test_data)} images")
@@ -70,7 +71,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train the model
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"model will be trained on device={device}")
 model.to(device)
 train_loss_history = []
@@ -87,8 +88,6 @@ for epoch in range(NUM_EPOCHS):
     train_loss = 0.0
     test_loss = 0.0
     model.train()  # set the model to training mode
-    # use tqdm to show a progress bar
-    # for i, data in enumerate(tqdm(train_loader)):
     train_correct = 0
     train_total = 0
     for i, data in enumerate(train_loader):
@@ -112,10 +111,10 @@ for epoch in range(NUM_EPOCHS):
     correct = 0
     total = 0
     with torch.no_grad():
-        # use tqdm to show a progress bar
         for i, data in enumerate(tqdm(test_loader)):
             # for i, data in enumerate(test_loader):
             inputs, labels = data[0].to(device), data[1].to(device)
+
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             test_loss += loss.item()
@@ -155,11 +154,3 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
 
 print(f"Test Accuracy: {100 * correct / total}%")
-
-
-# Plot the food101 loss and test loss per iteration
-plt.plot(train_loss_history, label="food101")
-plt.show()
-plt.plot(test_loss_history, label="test")
-plt.show()
-print("Finished Training and Testing")
