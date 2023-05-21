@@ -27,7 +27,7 @@ current_date = time.strftime("%Y-%m-%d")
 torch.manual_seed(42)
 
 
-def get_data_loaders(batch_size=BATCH_SIZE, noise=0.0) -> Tuple[DataLoader, DataLoader ]:
+def get_data_loaders(batch_size=BATCH_SIZE, noise=0.0) -> Tuple[DataLoader, DataLoader]:
     # Define the transformation for the image
     # taken from https://github.com/shubhajitml/food-101/blob/master/food-101-pytorch.ipynb
 
